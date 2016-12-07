@@ -26,7 +26,7 @@ services:
       user: vagrant
   brooklyn.config:
     files.preinstall:
-      ~/.m2/repository/org/apache/brooklyn/deb-packaging/0.10.0-REAPPT-1.4.2/deb-packaging-0.10.0-REAPPT-1.4.2.deb: brooklyn-package.deb # BROOKLYN_VERSION
+      ~/.m2/repository/org/apache/brooklyn/deb-packaging/0.10.0-REAPPT-1.4.3-SNAPSHOT/deb-packaging-0.10.0-REAPPT-1.4.3-SNAPSHOT.deb: brooklyn-package.deb # BROOKLYN_VERSION
 
 ---
 
@@ -40,7 +40,7 @@ services:
       user: vagrant
   brooklyn.config:
     files.preinstall:
-      ~/.m2/repository/org/apache/brooklyn/deb-packaging/0.10.0-REAPPT-1.4.2/deb-packaging-0.10.0-REAPPT-1.4.2.deb: brooklyn-package.deb # BROOKLYN_VERSION
+      ~/.m2/repository/org/apache/brooklyn/deb-packaging/0.10.0-REAPPT-1.4.3-SNAPSHOT/deb-packaging-0.10.0-REAPPT-1.4.3-SNAPSHOT.deb: brooklyn-package.deb # BROOKLYN_VERSION
 
 ---
 
@@ -54,7 +54,7 @@ services:
       user: vagrant
   brooklyn.config:
     files.preinstall:
-      ~/.m2/repository/org/apache/brooklyn/rpm-packaging/0.10.0-REAPPT-1.4.2/rpm-packaging-0.10.0-REAPPT-1.4.2.rpm: brooklyn-package.rpm # BROOKLYN_VERSION
+      ~/.m2/repository/org/apache/brooklyn/rpm-packaging/0.10.0-REAPPT-1.4.3-SNAPSHOT/rpm-packaging-0.10.0-REAPPT-1.4.3-SNAPSHOT.rpm: brooklyn-package.rpm # BROOKLYN_VERSION
 
 ---
 
@@ -68,7 +68,7 @@ services:
       user: vagrant
   brooklyn.config:
     files.preinstall:
-      ~/.m2/repository/org/apache/brooklyn/rpm-packaging/0.10.0-REAPPT-1.4.2/rpm-packaging-0.10.0-REAPPT-1.4.2.rpm: brooklyn-package.rpm # BROOKLYN_VERSION
+      ~/.m2/repository/org/apache/brooklyn/rpm-packaging/0.10.0-REAPPT-1.4.3-SNAPSHOT/rpm-packaging-0.10.0-REAPPT-1.4.3-SNAPSHOT.rpm: brooklyn-package.rpm # BROOKLYN_VERSION
 
 
 ---
