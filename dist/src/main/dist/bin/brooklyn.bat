@@ -65,7 +65,7 @@ IF NOT DEFINED JAVA_BIN (
 )
 
 REM use default memory settings, if not specified
-IF "%JAVA_OPTS%"=="" SET JAVA_OPTS=-Xms256m -Xmx500m -XX:MaxPermSize=256m
+IF "%JAVA_OPTS%"=="" SET JAVA_OPTS=-Xms256m -Xmx1g
 
 REM set up the classpath
 SET INITIAL_CLASSPATH=%BROOKLYN_HOME%conf;%BROOKLYN_HOME%lib\patch\*;%BROOKLYN_HOME%lib\brooklyn\*;%BROOKLYN_HOME%lib\dropins\*
@@ -75,6 +75,7 @@ IF NOT "%BROOKLYN_CLASSPATH%"=="" SET "INITIAL_CLASSPATH=%BROOKLYN_CLASSPATH%;%I
 REM force resolution of localhost to be loopback, otherwise we hit problems
 REM TODO should be changed in code
 SET JAVA_OPTS=-Dbrooklyn.location.localhost.address=127.0.0.1 %JAVA_OPTS%
+SET JAVA_OPTS=-XX:SoftRefLRUPolicyMSPerMB=1 %JAVA_OPTS%
 
 REM workaround for http://bugs.sun.com/view_bug.do?bug_id=4787931
 SET JAVA_OPTS=-Duser.home="%USERPROFILE%" %JAVA_OPTS%

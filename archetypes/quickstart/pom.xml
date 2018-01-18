@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.brooklyn</groupId>
     <artifactId>brooklyn-parent</artifactId>
-    <version>0.10.0-SNAPSHOT</version>  <!-- BROOKLYN_VERSION -->
+    <version>0.12.0</version>  <!-- BROOKLYN_VERSION -->
     <relativePath>../../../brooklyn-server/parent/pom.xml</relativePath>
   </parent>
 
@@ -120,6 +120,7 @@
               <outputDir>src/main/resources/archetype-resources/src/main/java</outputDir>
               <includes> <include>**/*</include> </includes>
               <replacements>
+                <replacement> <token>extra://brooklyn-sample-extra-repo-url</token> <value>\$\{archetypeRepository}</value> </replacement>
                 <replacement> <token>brooklyn-sample</token> <value>\$\{artifactId}</value> </replacement>
                 <replacement> <token>com\.acme\.sample\.brooklyn</token> <value>\$\{package}</value> </replacement>
                 <replacement> <token>com/acme/sample/brooklyn</token> <value>\$\{packageInPathFormat}</value> </replacement>
@@ -139,6 +140,7 @@
               <outputDir>src/main/resources/archetype-resources/src/test/java</outputDir>
               <includes> <include>**/*</include> </includes>
               <replacements>
+                <replacement> <token>extra://brooklyn-sample-extra-repo-url</token> <value>\$\{archetypeRepository}</value> </replacement>
                 <replacement> <token>brooklyn-sample</token> <value>\$\{artifactId}</value> </replacement>
                 <replacement> <token>com\.acme\.sample\.brooklyn</token> <value>\$\{package}</value> </replacement>
                 <replacement> <token>com/acme/sample/brooklyn</token> <value>\$\{packageInPathFormat}</value> </replacement>
@@ -180,6 +182,7 @@
                 <replacement> <token>\$</token> <value>\\\$</value> </replacement>
                 -->
                 
+                <replacement> <token>extra://brooklyn-sample-extra-repo-url</token> <value>\$\{archetypeRepository}</value> </replacement>
                 <replacement> <token>brooklyn-sample</token> <value>\$\{artifactId}</value> </replacement>
                 <replacement> <token>com\.acme\.sample\.brooklyn</token> <value>\$\{package}</value> </replacement>
                 <replacement> <token>com/acme/sample/brooklyn</token> <value>\$\{packageInPathFormat}</value> </replacement>
@@ -237,6 +240,7 @@
                 <exclude>**/src/brooklyn-sample/README.md</exclude>
                 <exclude>**/src/brooklyn-sample/pom.xml</exclude>
                 <exclude>**/src/brooklyn-sample/src/main/java/**/*.java</exclude>
+                <exclude>**/src/brooklyn-sample/src/main/resources/**/*.bom</exclude>
                 <exclude>**/src/brooklyn-sample/src/test/resources/**/*.bom</exclude>
                 <exclude>**/src/brooklyn-sample/src/test/resources/**/*.yaml</exclude>
                 <exclude>**/src/brooklyn-sample/src/test/java/**/*.java</exclude>

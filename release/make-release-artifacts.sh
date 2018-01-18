@@ -175,8 +175,9 @@ mkdir -p ${src_staging_dir}
 # * sandbox (which hasn't been vetted so thoroughly)
 # * release (where this is running, and people who *have* the release don't need to make it)
 # * jars and friends (these are sometimes included for tests, but those are marked as skippable,
+# * cli/vendor - that's not source controlled and not removed by mvn clean so ignore it in case it's already there
 #     and apache convention does not allow them in source builds; see PR #365
-rsync -rtp --exclude .git\* --exclude brooklyn-docs/ --exclude brooklyn-library/sandbox/ --exclude brooklyn-dist/release/ --exclude '**/*.[ejw]ar' . ${staging_dir}/${release_name}-src
+rsync -rtp --exclude .git\* --exclude brooklyn-docs/ --exclude brooklyn-library/sandbox/ --exclude brooklyn-client/cli/vendor/ --exclude brooklyn-dist/release/ --exclude '**/*.[ejw]ar' . ${staging_dir}/${release_name}-src
 
 rm -rf ${artifact_dir}
 mkdir -p ${artifact_dir}
@@ -205,11 +206,37 @@ else
 fi
 
 # Re-pack the archive with the correct names
+# Classic release
 tar xzf ${src_staging_dir}/brooklyn-dist/dist/target/brooklyn-dist-${current_version}-dist.tar.gz -C ${bin_staging_dir}
-mv ${bin_staging_dir}/brooklyn-dist-${current_version} ${bin_staging_dir}/${release_name}-bin
+mv ${bin_staging_dir}/brooklyn-dist-${current_version} ${bin_staging_dir}/${release_name}-classic
+
+( cd ${bin_staging_dir} && tar czf ${artifact_dir}/${artifact_name}-classic.tar.gz ${release_name}-classic )
+( cd ${bin_staging_dir} && zip -qr ${artifact_dir}/${artifact_name}-classic.zip ${release_name}-classic )
+
+# Karaf release
+tar xzf ${src_staging_dir}/brooklyn-dist/karaf/apache-brooklyn/target/apache-brooklyn-${current_version}.tar.gz -C ${bin_staging_dir}
+mv ${bin_staging_dir}/apache-brooklyn-${current_version} ${bin_staging_dir}/${release_name}-bin
 
 ( cd ${bin_staging_dir} && tar czf ${artifact_dir}/${artifact_name}-bin.tar.gz ${release_name}-bin )
 ( cd ${bin_staging_dir} && zip -qr ${artifact_dir}/${artifact_name}-bin.zip ${release_name}-bin )
+
+###############################################################################
+# CLI release
+set +x
+echo "Make CLI artifacts"
+set -x
+
+for p in linux windows macosx; do
+    mkdir ${bin_staging_dir}/${release_name}-client-cli-${p}
+    rsync -a ${bin_staging_dir}/${release_name}-bin/bin/brooklyn-client-cli/ ${bin_staging_dir}/${release_name}-client-cli-${p} --exclude '*.386' --exclude '*.amd64'
+done
+cp ${bin_staging_dir}/${release_name}-bin/bin/brooklyn-client-cli/linux.386/br ${bin_staging_dir}/${release_name}-client-cli-linux
+cp ${bin_staging_dir}/${release_name}-bin/bin/brooklyn-client-cli/windows.386/br.exe ${bin_staging_dir}/${release_name}-client-cli-windows
+cp ${bin_staging_dir}/${release_name}-bin/bin/brooklyn-client-cli/darwin.amd64/br ${bin_staging_dir}/${release_name}-client-cli-macosx
+for p in linux windows macosx; do
+    ( cd ${bin_staging_dir} && tar czf ${artifact_dir}/${artifact_name}-client-cli-${p}.tar.gz ${release_name}-client-cli-${p} )
+    ( cd ${bin_staging_dir} && zip -qr ${artifact_dir}/${artifact_name}-client-cli-${p}.zip ${release_name}-client-cli-${p} )
+done
 
 ###############################################################################
 # Vagrant release
@@ -227,7 +254,7 @@ mv ${bin_staging_dir}/brooklyn-vagrant-${current_version} ${bin_staging_dir}/${r
 ###############################################################################
 # RPM artifacts
 
-cp ${src_staging_dir}/brooklyn-dist/packaging/target/rpm/apache-brooklyn/RPMS/noarch/apache-brooklyn-${current_version}-1.noarch.rpm ${artifact_dir}/${release_name}-1.noarch.rpm
+cp ${src_staging_dir}/brooklyn-dist/rpm-packaging/target/rpm/apache-brooklyn/RPMS/noarch/apache-brooklyn-${current_version}-1.noarch.rpm ${artifact_dir}/${artifact_name}-1.noarch.rpm
 
 ###############################################################################
 # Signatures and checksums
@@ -237,7 +264,7 @@ cp ${src_staging_dir}/brooklyn-dist/packaging/target/rpm/apache-brooklyn/RPMS/no
 which sha256sum >/dev/null || alias sha256sum='shasum -a 256' && shopt -s expand_aliases
 
 ( cd ${artifact_dir} &&
-    for a in *.tar.gz *.zip; do
+    for a in *.tar.gz *.zip *.rpm; do
         md5sum -b ${a} > ${a}.md5
         sha1sum -b ${a} > ${a}.sha1
         sha256sum -b ${a} > ${a}.sha256
@@ -249,9 +276,9 @@ which sha256sum >/dev/null || alias sha256sum='shasum -a 256' && shopt -s expand
 
 if [ -z "${dry_run}" -a ! -z "${APACHE_DIST_SVN_DIR}" ] ; then (
   cd ${APACHE_DIST_SVN_DIR}
-  [ -d ${artifact_name} ] && ( svn revert -R ${artifact_name}; svn rm -R ${artifact_name}; rm -rf ${artifact_name} )
+  [ -d ${artifact_name} ] && ( svn --non-interactive revert -R ${artifact_name}; svn --non-interactive rm --force ${artifact_name}; rm -rf ${artifact_name} )
   cp -r ${artifact_dir} ${artifact_name}
-  svn add ${artifact_name}
+  svn --non-interactive add ${artifact_name}
   )
   artifact_dir=${APACHE_DIST_SVN_DIR}/${artifact_name}
 fi

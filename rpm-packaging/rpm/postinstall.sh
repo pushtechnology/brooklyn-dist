@@ -19,7 +19,4 @@
 
 if which systemctl >> /dev/null 2>&1; then
     systemctl daemon-reload
-    systemctl start brooklyn.service
-else
-    initctl start brooklyn
 fi
