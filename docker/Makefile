@@ -17,7 +17,7 @@
 # under the License.
 #
 
-BROOKLYN_VERSION=0.12.0-REAPPT-1.4.4-SNAPSHOT
+BROOKLYN_VERSION=0.12.0-REAPPT-1.4.4
 
 default: all
 
